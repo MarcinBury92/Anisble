@@ -1,0 +1,46 @@
+# Playbook has been created by Marcin Bury
+# Creating a collaborative directory /Animals/Dogs with group ownership of the People. 
+# The direcory is readable, writable and accessable to members of People but not to any other user.
+# Files created inside directory have group ownership set to the People group.
+# Inside Dogs directory has been created file brunek who can be readable & writeable by the Bombel user.
+# To verify, please type Ad-HOC command: ansible -a "getfacl /Animal/Dogs/brunek" CapitolCity --become
+--- 
+- 
+ hosts: CapitolCity
+ become: true
+ become_user: root
+ gather_facts: false
+ tasks:
+   - name: Creating the Bombel user
+     user: 
+       name: Bombel
+       state: present
+   - name: Creating the People group
+     group:
+       name: People
+       state: present
+   - name: Creating a requested directory /Animals/Dogs
+     file:
+       path: /Animals/Dogs
+       group: People
+       mode: '2770'
+       state: directory
+   - name: Creating a requested file brunek 
+     file:
+       path: /Animals/Dogs/brunek
+       state: touch
+   - name: Setting ACL dor Bombel user
+     acl:
+       path: /Animals/Dogs/brunek
+       entity: Bombel
+       etype: user
+       permissions: rw
+       state: present
+...
+
+
+
+
+
+
+
