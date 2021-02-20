@@ -1,0 +1,13 @@
+---
+-
+ hosts: Poland
+ become: true
+ become_user: root
+ gather_facts: false
+ tasks:
+  - name: Creating user
+    user:
+       name: Rumak
+       password: "{{ 'password' | password_hash('sha512') }}"
+       state: present
+...
