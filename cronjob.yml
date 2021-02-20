@@ -1,0 +1,29 @@
+#Playbook has been created by Marcin Bury.
+#Using Anisble playbook to scheduling the httpd service restarting at 6AM and 11PM everydy
+#Using Anisble playbook to scheduling the mariadb service restarting at 6.30AM every Sunday
+#To verify, please use AD-HOC comand: < ansible -a "crontab -l" Prod or Test > 
+---
+-
+ hosts: Prod
+ become: yes
+ become_user: root
+ tasks:
+    - name: Scheduling restart of htppd service on Prod servers
+      cron:
+        name: "Restarting htppd service at 6AM and 11PM everyday"
+        hour: "6,23"
+        minute: "0"
+        job: /usr/bin/systemctl restart httpd
+-
+ hosts: Test
+ become: yes
+ become_user: root
+ tasks:  
+    - name: Scheduling restart of mariaDB service on Test servers
+      cron:
+        name: "Restarting mariaDB setvice at 3h30 on Sunday"
+        hour: "3"
+        minute: "30"
+        weekday: "0"
+        job: /usr/bin/systemctl restart mariadb
+...
