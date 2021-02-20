@@ -13,9 +13,11 @@ Node[1:4].example.com
 
 [Warsaw]
 Node[4:5].example.com
+
 [Wroclaw]
 Node1.example.com              #ansible_user=ansibleuser
 Node2.example.com              #ansible_user=sam
+
 [Cracow]
 Node3.example.com
 [Poland:children]
@@ -23,11 +25,10 @@ Warsaw
 Wroclaw
 Cracow
 
-
-[capitol:children]
+[CapitolCity:children]
 Warsaw
 Cracow
-#Node5.example.com
+
 
 [Poland:vars]
 #ansible_user=Mieszko
