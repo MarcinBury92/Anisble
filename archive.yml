@@ -1,0 +1,17 @@
+#Playbook has been created by Marcin Bury
+#Using ansible playbook  archiving contents of /etc directory into etc.tar file under  /root directory in bz2 format
+#To check content of '/root/etc.tar.bz2' use ad-hoc command:  " ansible -a 'tar -jtvf /root/etc.tar.bz2' Dev --become".
+#Please be aware that tar and bzip packages must be installed on Dev servers
+#if mentioned packages are not installed, please use ad-hoc command: "anisblie -m yum -a 'name = tar, bzip2 state = name' Dev --become" 
+---
+-
+ hosts: Dev
+ become: true
+ gather_facts: False
+ tasks:
+    - name: Archiving and compresing /etc directory
+      archive:
+          path: /etc
+          dest: /root/etc.tar.bz2
+          format: bz2
+...
