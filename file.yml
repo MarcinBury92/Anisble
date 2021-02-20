@@ -1,5 +1,5 @@
 # Playbook has been created by Marcin Bury.
-#This playbook is resposibling to creation file with name Piesek under path /home/Rumak. File is reachable and writable by members Rumak group but not to any# other user. The contents of the file include the name and IP address of the managed host.
+#This playbook is resposibling to creation file with name Piesek under path /home/Rumak on the Test machines. File is reachable and writable by members of the Rumak group but not to any other user. The contents of the file include the host name and IP address.
 ---
 -
  hosts: Test
