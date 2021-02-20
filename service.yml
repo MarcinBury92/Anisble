@@ -2,7 +2,7 @@
 -
  hosts: Prod
  become: true
- gather_facts: false
+ become_user: root
  tasks:
    - name: Installing of httpd & firewalld service
      yum:
@@ -33,7 +33,7 @@
 -
  hosts: Test
  become: true
- gather_facts: false
+ become_user: root
  tasks:
    - name: Installing mariaDB service
      yum: 
