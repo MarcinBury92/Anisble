@@ -1,0 +1,44 @@
+#Playbook has been created by Marcin Bury
+#Creating new the Apache document  /AppacheServer. In this directory, we have creating a file with the name webside.html and them giving this file correct context.
+#Creating a file with the name hosts in the root home directory, with information about IP and host names for Prod machines.
+#Moving the hosts_Prod file to the /etc directory and giving the file correct context.
+
+---
+-
+ hosts: Prod
+ become: yes
+ become_user: root
+ gather_facts: true
+ tasks:
+   - name: Creating AppacheServer directory
+     file: 
+       path: /AppacheServer
+       state: directory
+   - name: Creating webside.html file 
+     file:
+       path: /AppacheServer/webside.html
+       state: touch
+   - name: Creating file who contain IP addresses and host names for Prod machines
+     copy:
+       dest: /root/hosts_Prod
+       content: IP addrres  {{ ansible_default_ipv4.address}}  {{ansible_fqdn}}
+   - name: Setting correct context
+     sefcontext:
+       target: '/AppacheServer(/.*)?'
+       setype: httpd_sys_content_t
+       state: present
+   - name: Restoring context type for AppacheServer directory
+     command: restorecon -R -v /AppacheServer
+   - name: Moving hosts_Prod file to etc directory
+     copy:
+       src: /root/hosts_Prod
+       dest: /etc/hosts_Prod
+       remote_src: true
+   - name: Setting correct context for hosts_Prod file in etc directory
+     sefcontext:
+       target: '/etc/hosts_Prod'
+       setype: etc_t
+       state: present
+   - name: Restoring context for hosts_Prod file
+     command: restorecon -R -v /etc/hosts_Prod
+...
