@@ -10,4 +10,5 @@
        name: Rumak
        password: "{{ 'password' | password_hash('sha512') }}"
        state: present
+
 ...
