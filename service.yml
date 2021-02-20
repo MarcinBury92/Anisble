@@ -1,0 +1,49 @@
+---
+-
+ hosts: Prod
+ become: true
+ gather_facts: false
+ tasks:
+   - name: Installing of httpd & firewalld service
+     yum:
+       name:
+           - httpd
+           - firewalld     
+       state: present
+   - name: Creating Index.html
+     copy:
+       content: "Welcome to my webside\n"
+       dest: /var/www/html/index.html
+   - name: Starting and enabling firewalld service
+     service:
+       name: firewalld
+       state: started
+       enabled: yes
+   - name: Firewalld permits acess to httpd service
+     firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: yes
+   - name: Starting and enabling httpd service
+     service:
+       name: httpd
+       state: started
+       enabled: yes 
+-
+ hosts: Test
+ become: true
+ gather_facts: false
+ tasks:
+   - name: Installing mariaDB service
+     yum: 
+       name: 
+           - mariadb-server
+           - mariadb-common
+       state: present
+   - name: Starting and enabling mariaDB service
+     service:
+       name: mariadb
+       state: started
+       enabled: yes
+... 

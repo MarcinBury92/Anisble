@@ -1,0 +1,35 @@
+[Prod]
+Node[1:2].example.com		
+
+[Test]
+Node3.example.com
+
+[Dev]
+Node[4:5].example.com
+
+[vebserver]
+#Node5.example.com:1234 ansible_connection=ssh ansible_user=john
+Node[1:4].example.com
+
+[Warsaw]
+Node[4:5].example.com
+[Wroclaw]
+Node1.example.com              #ansible_user=ansibleuser
+Node2.example.com              #ansible_user=sam
+[Cracow]
+Node3.example.com
+[Poland:children]
+Warsaw
+Wroclaw
+Cracow
+
+
+
+[capitol:children]
+Warsaw
+Cracow
+#Node5.example.com
+
+[Poland:vars]
+#ansible_user=Mieszko
+#ansible_hosts=abcd
