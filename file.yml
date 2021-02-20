@@ -1,0 +1,20 @@
+# Playbook has been created by Marcin Bury.
+#This playbook is resposibling to creation file with name Piesek under path /home/Rumak. File is reachable and writable by members Rumak group but not to any# other user. The contents of the file include the name and IP address of the managed host.
+---
+-
+ hosts: Test
+ become: true
+ gather_facts: true
+ tasks:
+   - name: Creating file, setting permision
+     file:
+        path: /home/Rumak/Piesek
+        owner: Rumak
+        group: Rumak
+        mode: '2770'
+        state: touch                          
+   - name: Adding content to the file
+     lineinfile:
+        path: /home/Rumak/Piesek
+        line: "Welcome to {{ ansible_fqdn }}. \nIP_address = {{ ansible_default_ipv4.address }}. "
+...
