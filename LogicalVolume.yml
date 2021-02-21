@@ -1,0 +1,48 @@
+#Playbook has been created by Marcin Bury
+#Creating a new two physical particions, creating a new volume group in the name of vgdata, vg extent is 16MB.
+#Creating a new logical volume in the name of WarsamLVdata with the size of 100% free space volume group.
+#Creating XFS file system on created logical volume mounted under /mnt/WarsawLVData.
+#Verification: ansible -a "df -Th" Warsaw --become
+-
+ hosts: Warsaw
+ become: true
+ become_user: root
+ gather_facts: false
+ tasks:
+       - name: Creating 214MiB partition
+         parted:
+             device: /dev/nvme0n2
+             number: 2
+             state: present
+             flags: [ lvm ]
+             part_start: 116MiB
+             part_end: 330MiB
+       - name: Creating 298MB particion
+         parted:
+             device: /dev/nvme0n2
+             number: 3 
+             flags: [ lvm ]
+             part_start: 330MiB
+             part_end: 628MiB
+             state: present
+       - name: Creating Volume Group
+         lvg:
+             vg: vgdata
+             pvs: /dev/nvme0n2p2,/dev/nvme0n2p3
+             pesize: 16MB
+       - name: Creating Logical volume
+         lvol:
+             vg: vgdata
+             lv: WarsawLVdata
+             size: 100%FREE
+       - name: Creating a XFS file system
+         filesystem:
+             fstype: xfs
+             dev: /dev/mapper/vgdata-WarsawLVdata
+       - name: Mounting LV under /mnt/WarsawLVData
+         mount:  
+             name: /mnt/WarsawLVData
+             src: /dev/mapper/vgdata-WarsawLVdata
+             fstype: xfs
+             state: mounted 
+                         
