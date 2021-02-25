@@ -1,0 +1,39 @@
+#Playbook has been created by Marcin Bury
+#Configuring Prod servers to accept ntpand https services.
+#Configuring Dev servers to accept traffic on port range 400-404/tcp
+#Firewall configuration as the persistent. Reloading firewall to make changes effective
+#Veryfication:
+#ansible -a "firewall-cmd --list-all" Prod --become
+#ansible -a "firewall-cmd --list-all" Dev --become
+---
+-
+ hosts: all
+ become: True
+ gather_facts: False
+ tasks:
+     - name: Configuring fiewall on Prod machines
+       firewalld:
+          service: "{{ item }}"
+          state: enabled
+          permanent: yes
+       loop:
+            - ntp
+            - https
+       when: inventory_hostname in groups['Prod']
+       notify: Reload firewall
+   
+     - name: Configuring firewall on Dev machines
+       firewalld:
+          port: 400-404/tcp
+          state: enabled
+          permanent: yes
+       when: inventory_hostname in groups['Dev']
+       notify: Reload firewall
+ handlers:
+     - name: Reload firewall
+       service:
+          name: firewalld
+          state: reloaded
+
+...
+
