@@ -1,0 +1,60 @@
+#Playbook has been created by Marcin Bury
+#Reducing the Logical Volume to 300 MiB size if Logical volume size is beetwen 300 MiB and 400 MiB.
+#Reducing the Logical Volume to 500 MB size if Logical Volume is more than 500 MiB.
+#Creating the Logical Volume by consuming all remaining space in the volume group   
+
+---
+-
+ hosts: all
+ become: yes
+ gather_facts: True
+ tasks:
+    - name: Reading information about Logical volume
+      parted:
+         device: /dev/nvme0n2
+         unit: MiB
+         state: info
+      register: nvme0n2_infO   
+    - name: Reducte Logical Volume
+      lvol:
+         vg: Grupa
+         lv: lvm
+         size: 300m
+         force: yes  
+      when:
+        - "'lvm' in ansible_facts['lvm']['lvs']"
+        - ansible_facts['lvm']['lvs']['lvm']['size_g'] < '0.40' and ansible_facts['lvm']['lvs']['lvm']['size_g'] > '0.30'
+    
+    - name: Reducte Logical Volume
+      lvol:
+         vg: Grupa
+         lv: lvm
+         size: 500m
+         force: yes  
+      when:
+        - "'lvm' in ansible_facts['lvm']['lvs']"
+        - ansible_facts['lvm']['lvs']['lvm']['size_g'] > '0.50'
+    
+    
+    
+     
+    
+    - name: Creating logical volume
+      lvol:
+         vg: Grupa
+         lv: LogicV
+         size: 100%FREE
+         state: present 
+      when: "'Grupa' in ansible_facts['lvm']['vgs']"
+         
+    - name: Displaying message
+      debug:
+         msg: "Volume group not exist"        
+      when: "'Grupa' not in ansible_facts['lvm']['vgs']"  
+
+
+
+
+
+...
+
