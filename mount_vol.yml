@@ -1,0 +1,39 @@
+#Created by Marcin bury
+# Creating filesystem on volumes
+#Mounting the Logical Volume, persistent
+---
+-
+ hosts: all
+ become: Yes
+ gather_facts: True
+ tasks:
+  
+   - name: Creating filesystem
+     filesystem:
+          
+          dev: /dev/Grupa/lvm
+          fstype: xfs
+     when: "'lvm' in ansible_facts['lvm']['lvs']"
+            
+   - name: Mounting logical volume
+     mount:
+          src: /dev/Grupa/lvm
+          path: /volume/Lvolume
+          fstype: xfs
+          state: mounted
+     when: "'lvm' in ansible_facts['lvm']['lvs']"
+          
+   - name: Creating filesystem
+     filesystem:
+          dev: /dev/Grupa/LogicV
+          fstype: ext4
+     when: "'LogicV' in ansible_facts['lvm']['lvs']"
+          
+   - name: Mounting logical volume
+     mount: 
+          src: /dev/Grupa/LogicV
+          path: /volume/Lvolume2
+          fstype: ext4
+          state: mounted
+     when: "'LogicV' in ansible_facts['lvm']['lvs']"
+... 
