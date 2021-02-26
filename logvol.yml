@@ -1,0 +1,39 @@
+#Playbook has been created by Marcin Bury
+# Creating Logical Volume of size 592 MiB if volume group "Grupa" s sufficient free space ( more than 600 MiB)
+# Creating Logical Volume of size 392 MiB if volume group has free space less than 500 MiB
+# Message "Grupa does not exist" should be displayed if volume group is not created on the machine 
+
+
+
+---
+-
+ hosts: all
+ become: true
+ gather_facts: True
+ tasks: 
+      - name: Creating logical volume of size 596 MiB
+        lvol: 
+              vg: Grupa 
+              lv: lvm
+              size: 592m
+              state: present
+        when: 
+             - "'Grupa' in ansible_facts['lvm']['vgs']"
+             - ansible_facts['lvm']['vgs']['Grupa']['free_g'] > '0.5'
+              
+      - name: Creating logical volume of size 396 MiB
+        lvol:  
+              vg: Grupa
+              lv: lvm
+              size: 392m
+              state: present
+        when:
+            - "'Grupa' in ansible_facts['lvm']['vgs']"
+            - ansible_facts['lvm']['vgs']['Grupa']['free_g'] < '0.5' 
+      - name: Displaying message goup does not exist
+        debug:
+              msg: "Grupa does not exist"
+        when: "'Grupa' not in ansible_facts['lvm']['vgs']" 
+
+
+...
