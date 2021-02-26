@@ -1,0 +1,46 @@
+#Playbook has been created by Marcin Bury
+# Creating partition on allervers with 400MiB size and 600MiB on Test server by using WHEN statement
+# Creating Volume group on Prod and Test machines 
+
+---
+-
+ hosts: Test, Prod
+ become: True
+ gather_facts: True
+ tasks:
+       - name: Reading information about disk
+         parted:
+                 device: /dev/nvme0n2
+                 unit: MiB
+                 state: info
+         register:
+                 nvme0n2_info
+                     
+       - name: Creating logical partition
+         parted:  
+                 device: /dev/nvme0n2
+                 number: 1
+                 part_type: primary
+                 flags: [ lvm ]
+                 part_end:   401MiB
+                 state: present
+         when: inventory_hostname in groups['Prod']
+                
+       - name: Creating logical partition
+         parted:  
+                 device: /dev/nvme0n2
+                 number: "1"
+                 part_type: primary
+                 flags: [ lvm ]
+                 part_start: 1MiB
+                 part_end:   601MiB
+                 state: present
+         when: inventory_hostname in groups['Test']
+                
+       - name: Creating volume group
+         lvg:   
+                 pvs: /dev/nvme0n2p1
+                 vg: Grupa 
+                 pesize: "4"
+...       
+
