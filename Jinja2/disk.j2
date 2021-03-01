@@ -1,0 +1,8 @@
+{% for host in ansible_play_batch -%}
+Disk size of nvmeon2 on {{ hostvars[host]['ansible_fqdn'] }}  = "{{hostvars[host]['ansible_facts']['devices']['nvme0n2']['size'] | default('Not Exist') }}"
+Size on nvme0n2p1 on {{host}} = "{{hostvars[host]['ansible_facts']['devices']['nvme0n2']['partitions']['nvme0n2p1']['size'] | default('Not Exist') }}"
+{% endfor %}
+{% for host in groups['Prod'] %}
+Size of lvm on {{hostvars[host]['ansible_fqdn'] }} =  {{hostvars[host]['ansible_lvm']['lvs']['lvm']['size_g'] |default('Not Exist')}} GB
+Size of LogicV on {{hostvars[host]['ansible_fqdn'] }} =  {{hostvars[host]['ansible_lvm']['lvs']['LogicV']['size_g'] |default('Not Exist')}} GB
+{% endfor %}
