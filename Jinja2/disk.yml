@@ -1,0 +1,15 @@
+
+
+---
+-
+ hosts: all
+ become: True
+ gather_facts: True
+ tasks:
+       - name: Deploying template
+         template:
+                  src: disk.j2
+                  dest: /root/disk_size
+         when: inventory_hostname in groups['Prod']
+
+...
