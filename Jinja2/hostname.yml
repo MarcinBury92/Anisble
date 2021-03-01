@@ -1,0 +1,16 @@
+#Playbook has been created by Marcin Bury
+#Creating file under path /root/host_names with informations about hosts name and ip addresses for all managed hosts by using jinja1 template on Prod machines.
+
+---
+-
+ hosts: all
+ become: True
+ gather_facts: True
+ tasks:
+  
+  - name: Deploying template
+    template:
+             src: hostname.j2
+             dest: /root/host_names
+    when: inventory_hostname in groups['Prod']
+...
