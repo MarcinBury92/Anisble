@@ -1,0 +1,4 @@
+{% for host in ansible_play_batch -%}
+ {{ hostvars[host]['ansible_fqdn'] }}       {{Ip_address=  hostvars[host]['ansible_default_ipv4']['address'] }}
+{% endfor -%}
+
